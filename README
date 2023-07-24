@@ -1,0 +1,111 @@
+Copyright Croitoru Constantin-Bogdan Grupa 314CA
+
+Pentru retinerea datelor se folosesc 2 structuri. Structura imagine retine 
+datele imaginii: cuvant_magic,tip, inaltime, latime, valoare maxima si matricea
+de pixeli gri sau color. Pentru matricea de pixeli color folosesc o alta 
+structura, color_rgb, care are ca campuri variabilele r, a, v de tip int pentru
+a retine valorile pentru pixelii: rosu, albastru si verde.
+
+Programul are functionalitatea unui editor foto si realizeaza urmatoarele 
+operatii:
+
+1.Operatia LOAD
+Aceasta este definita prin functia incarcare si incarca in memorie o noua
+imagine. Daca deja exista o imagine se elibereaza memoria prin functia 
+eliberare, adica se sterge imaginea existenta, si se incarca noua imagine. 
+La incarcare se citesc datele despre tipul imaginii. Daca este in tonuri gri 
+este alocata matricea gri in care se retin pixelii, iar daca este de tip color 
+se alocata dinamic matricea de tipul structura color_rgb pentru a retine 
+valoarea pixelilor pentru culoare:albastru, verde si rosu. Initial fisierul 
+este deschis ca text.Daca este text ramane deschis ca text, iar daca este binar
+se retine pozitia cursorului, se inchide fisierul si se deschide ca binar de la
+pozitia ramasa. La final, dupa ce se citesc toate datele, fisierul se inchide.
+Modul dupa care vedem daca fisierul este text sau binar est cuvantul magic. 
+Daca este P2 sau P3 este text, iar daca este P5 sau P6 este binar
+In aceasta functie, inainte de citirea cuvantului magic, a latimii si 
+inaltimii, a valorii maxime si a matricii de pixeli se apeleaza functia 
+eliminare_comentarii. Aceasta citeste prima litera de pe rand si daca este '#' 
+citeste si urmatoarele litere pana la sfarsitul randului, iar daca nu se da cu 
+o pozitie in spate cursorul in fisier.
+
+2.Operatia SELECT
+Aceasta poate fi de 2 tipuri SELECT ALL, in care se selecteaza dimensiunea 
+maxima a imaginii, si SELECT x1x2x3x4 in care se retin capetele noii selectii 
+asupra imaginii. Operatia SELECT ALL se apeleza prin functia selecteaza_tot, 
+iar operatia SELECT x1x2y1y2 se apeleaza prin selecteaza_xy. Pentru 
+determinarea selectului care trebuie folosit se foloseste functia 
+alegere_select. Aceasta compara al doilea cuvant din sirul citit cu ALL. Daca 
+este ALL atunci se apeleaza functia selecteza_tot, iar in caz contrar se 
+converteste la int si se retine in x1 prima valoare, iar urmatoarele se retin 
+in y1, x2 si y2. Acestea se retin in vectorii x[2] si y[2] unde x[0] retine x1,
+x[1]=x2, y[0]=y1 si y[1]=y1.In cazul operatiei SELECT ALL x[0] si y[0] sunt 0, 
+iar y[1] este inaltimea si x[1] este latimea.
+
+3.Operatia EQUALIZE
+Aceasta este apelata prin functia egalizare si schimba fiecare pixel dupa 
+formula data. Valoare pentru fiecare pixel se calculeaza in aux, se apeleaza 
+functia clampul_meu pentru aux, pentru a aduce valoarea in intervalul 0 255 in 
+caz daca depaseste si apoi este retinut in matricea de pixeli. Pentru 
+calcularea sumei se foloseste functia suma care calculeaza suma elementele din 
+vectorul care se transmite ca parametru pana la elementul transmis, inclusv el.
+
+4.Operatia CROP
+Aceasta este realizata prin funtia crop. Se verifica daca este incarcata in 
+memorie o imagine. Daca imagianea incarcata este gri se apeleaza functia 
+crop_gri, iar daca este color se apeleaza crop_color. In functia crop_gri se 
+aloca dinamic o matrice auxiliara in care sunt retinute valorile aflate in 
+bucata determinata de valorile retinute de x[0], x[1], y[0], y[1].Se elibereaza
+memoria si se aloca matricea de pixeli cu noua dimensiune, iar apoi se copiaza 
+valorile din matricea auxiliara. Acelasi procedeu este si pentru functia 
+crop_color, doar ca matricea auxiliara este de tip structura color_rgb.
+
+5.Operatia APPLY
+Se apeleaza prin functia aplicare_verificare. Se verifica daca exista o imagine
+incarcata,apoi daca este color si daca parametrii sunt corecti.In caz afirmativ
+se apeleaza functia aplicare_filtru. In aceasta se aloca dinamic matricea in 
+care retine matricea pentru filtru. Pentru determinarea filtrului folosesc 
+functia verificare_filtru, iar apoi pentru initierea matricii pentru filtru 
+folosesc functia initiere_matrice in care se initializeaza matricea in functie 
+de filtrul introdus. Se aloca dinamic a matrice auxiliara in care se va retine 
+valorile pixelilor carora li se aplica filtrul. Iar la final se copiaza 
+continul din aux in matricea de pixeli, si este eliberata memoria pentru 
+matricea aux.
+
+6.Operatia SAVE
+Aceasta se  realizeaza prin functia salvare. Daca pe langa comanda SAVE si 
+numele fisierului, se citeste si cuvantul ascii atunci se apeleaza functia 
+salvare_text, iar in caz contrar se apeleaza functia salvare_binar. In functia
+salvare_text se scriu datele despre imagine. Daca este color se scrie matricea 
+color, iar daca este in tonuri gri se scrie matricea gri. Aceeasi idee este 
+folosita si pentru functia salvare_binar.
+
+7.Operatia EXIT
+Aceata se apeleaza prin functia iesire. In aceasta se elibereaza memoria 
+folosita cu ajutorul functie eliberare si se opreste executia programului.
+
+8.Operatia HISTOGRAM
+Aceata este apelata prin functia histograma si realizeaza histograma imaginii 
+cu y binuri si x stelute. Se verifica conditiile, iar pentru a verifica daca y 
+este putere a lui 2  se foloseste functia verif_putere2. Apoi se verifica daca 
+binurile sunt egale cu dimensiunea vectorului de frecventa care intial este 
+256. Daca nu este, se apeleaza functia egalare.In aceasta se aduna valorile din
+vector pentru a ramane cu y elemente. Dupa aceata se calculeaza maximul 
+frecventei din vectorul de frecventa si se se afiseaza histograma. Numarul de 
+stelute este calculat cu ajutorul functiei calculare_stelute.
+
+9.Operatia ROTATE
+Functia rotatie roteste imaginea la un anumit unghi 90, -90, 180 ,-180, 270, 
+-270, 360, -360. Daca imaginea este color se apealeaza functia 
+rotatie_90grade_color, iar daca nu, rotatie_90grade_gri. In functia 
+rotatie_90grade_gri daca selectia este chiar toata imaginea se apeleaza functia
+rotatie_imagine_gri, in care se intoarece toate imaginea, iar daca nu, se 
+roteste doar partea aflata intre selectie. La color se intampla acelasi lucru, 
+se apeleaza fuctia rotatie_90grade_color, iar daca selectia este toata imaginea
+se apeleaza functia rotatie_imagine_color, iar daca nu, se roteste doar partea 
+aflata intre selectie.
+Pentru realizare rotatiei se face rotatie doar la 90 de grade spre dreapta pe 
+care o apeleaza de mai multe ori in functie de dimensiunea unghiului. Pentru 90
+si -270 se apeleaza doar o data, pentru 180 si -180 de 2 ori si pentru -90 si 
+270 de 3 ori.
+
+
